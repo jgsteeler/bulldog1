@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ShoppingCart/bin/Debug/net5.0/ShoppingCart.dll",
+            "program": "${workspaceFolder}/ShoppingCart/basicApi/bin/Debug/net5.0/basicapi.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/ShoppingCart",
+            "cwd": "${workspaceFolder}/ShoppingCart/basicApi/",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
