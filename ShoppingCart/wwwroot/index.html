@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+    <!-- <link rel="stylesheet" href="css/site.css" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+  
+   
+
+   <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <h2>Shopping Cart</h2>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        Select Category 
+        <select id="cat">
+            <option value="1">-- Select --</option>
+            <option value="Home">Home</option>
+            <option value="Outdoors">Outdoors</option>
+            <option value="Automotive">Automotive</option>
+            <option value="Sports">Sports</option>
+            
+        </select>
+      </div>
+    </div>
+  </div>
+    <div class="row">
+    <div class="col-sm-6">
+      <table id="productTable" 
+             class="table table-bordered 
+                    table-condensed table-striped">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="products">
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    
+       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type='text/javascript'>
+        $(document).ready(function() {
+        
+            $('select option[value="1"]').attr("selected",true);
+        
+        $('#cat').change(function() {
+          var theUrl = "http://localhost:5000/api/products?category=" + this.value;
+
+          
+            fetch(theUrl)
+            .then(response => response.json())
+            .then(data => _displayItems(data))
+            .catch(error => console.error('Unable to get items.', error));
+        });
+           
+
+        
+        });
+        </script>
+    <script src="js/site.js" asp-append-version="true"></script>
+</body>
+</html>
