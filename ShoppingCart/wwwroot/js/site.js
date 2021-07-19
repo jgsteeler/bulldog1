@@ -1,103 +1,87 @@
 const productUri = 'api/products';
-let products = [];
+let cart = [];
 
-
-
-function getCategories(){
-    fetch('api/produCts/categories')
-    .then(res=> res.json())
-    .then(data=> _loadCategoriesDropdown(data))
-    .catch(error =>console.error('Unable to get Categories'));
-}
-
-function getProducts() {
-  fetch(uri)
-    .then(response => response.json())
-    .then(data => _displayItems(data))
-    .catch(error => console.error('Unable to get items.', error));
-}
-
-
-function addItem() {
-  const addNameTextbox = document.getElementById('add-name');
-
-  const item = {
-    isComplete: false,
-    name: addNameTextbox.value.trim()
-  };
-
-  fetch(uri, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(item)
-  })
-    .then(response => response.json())
-    .then(() => {
-      getItems();
-      addNameTextbox.value = '';
-    })
-    .catch(error => console.error('Unable to add item.', error));
-}
-
-function deleteItem(id) {
-  fetch(`${uri}/${id}`, {
-    method: 'DELETE'
-  })
-  .then(() => getItems())
-  .catch(error => console.error('Unable to delete item.', error));
-}
-
-function displayEditForm(id) {
-  const item = todos.find(item => item.id === id);
+$(document).ready(function() {
+  //default drop down to no category
+  $('select option[value="1"]').attr("selected",true);
   
-  document.getElementById('edit-name').value = item.name;
-  document.getElementById('edit-id').value = item.id;
-  document.getElementById('edit-isComplete').checked = item.isComplete;
-  document.getElementById('editForm').style.display = 'block';
-}
+  //initilize cart count
+  _displayCount();
 
-function updateItem() {
-  const itemId = document.getElementById('edit-id').value;
-  const item = {
-    id: parseInt(itemId, 10),
-    isComplete: document.getElementById('edit-isComplete').checked,
-    name: document.getElementById('edit-name').value.trim()
-  };
+  //Load Items based on Category
+  $('#ddlCategory').change(function() {
+    fetch(`${productUri}?category=${this.value}`)
+      .then(response => response.json())
+      .then(data => _displayItems(data))
+      .catch(error => console.error('Unable to get items.', error));
+  });
 
-  fetch(`${uri}/${itemId}`, {
-    method: 'PUT',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(item)
+  $('#btnCheckout').click(function() {
+   
+    _displayCart()
+    $('#modCheckout').modal('show');
+  });
+
+  $('#btnPlaceOrder').click(function() {
+    $('#modCheckout').modal('hide');
+    $('#modContact').modal('show');
   })
-  .then(() => getItems())
-  .catch(error => console.error('Unable to update item.', error));
 
-  closeInput();
+ 
+});
 
-  return false;
+function addItemToCart(id){
+  fetch(`${productUri}/${id}`)
+  .then(response => response.json())
+  .then(data =>  _addToCart(data))
+  .catch(error => console.error('Unable to get item.', error));
 }
 
-function closeInput() {
-  document.getElementById('editForm').style.display = 'none';
+function _addToCart(data){
+var addNew = true;
+  cart.forEach(v => {
+    //Test if projectname  == parameter1. If it is update status
+    if (v.id === data.id) {
+      v.quantity = v.quantity+1;
+      addNew = false;
+    }
+  });
+
+  if(addNew) cart[cart.length]={ id: data.id, name: data.name, price: data.price, quantity: 1};
+  _displayCount();
+  
 }
 
-function _displayCount(itemCount) {
-  const name = (itemCount === 1) ? 'item in cart' : 'items in cart';
+function removeItemFromCart(id){
 
-  document.getElementById('counter').innerText = `${itemCount} ${name}`;
+  let workingCart = cart;
+  cart = [];
+
+  workingCart.forEach(item =>{
+    if(item.id === id){
+      //donothing
+    }
+    else{
+      cart.push(item);
+    }
+
+  });
+_displayCount();
+_displayCart();
+
+}
+
+function _displayCount() {
+  let i = 0
+  cart.forEach(item =>{i=i+item.quantity;  });
+
+  const name = (i === 1) ? ' item in cart' : ' items in cart';
+  $('#lblMessage').text(`${i} ${name}`);  
 }
 
 function _displayItems(data) {
-  const tBody = document.getElementById('products');
+  const tBody = document.getElementById('tblProductsBody');
   tBody.innerHTML = '';
-
-  //_displayCount(data.length);
 
   const button = document.createElement('button');
 
@@ -106,7 +90,7 @@ function _displayItems(data) {
     let addButton = button.cloneNode(false);
     addButton.innerText = 'Add To Cart';
     addButton.setAttribute('onclick', `addItemToCart(${item.id})`);
-
+    addButton.setAttribute('class', 'btn btn-secondary')
   
     let tr = tBody.insertRow();
     
@@ -119,12 +103,79 @@ function _displayItems(data) {
     td2.appendChild(textNode2);
 
     let td3 = tr.insertCell(2);
-    let textNode3 = document.createTextNode(item.price);
+    let textNode3 = document.createTextNode(`$${item.price}`);
     td3.appendChild(textNode3);
 
     let td4 = tr.insertCell(3);
     td4.appendChild(addButton);
   });
-
-  products = data;
 }
+
+function updateQuantity(id, obj){
+if(Number(obj.value)===0) {
+  removeItemFromCart(id);
+}
+else {
+  cart.forEach(v => {
+    
+    if (v.id === id) {
+      v.quantity = Number(obj.value);
+    
+    }
+    _displayCount();
+    _displayCart();
+  });
+}
+}
+
+function _displayCart() {
+  const tBody = document.getElementById('tblCartBody');
+  tBody.innerHTML = '';
+
+  const button = document.createElement('button');
+  const textBox = document.createElement('input');
+  let totalPrice = 0;
+
+  cart.forEach(item => {
+    totalPrice += item.price;
+    
+    let delButton = button.cloneNode(false);
+    delButton.innerText = 'Delete';
+    delButton.setAttribute('onclick', `removeItemFromCart(${item.id})`);
+    delButton.setAttribute('class', 'btn btn-secondary');
+
+    let updateQty = textBox.cloneNode(false);
+    updateQty.setAttribute('type', 'text');
+    updateQty.value = item.quantity;
+    updateQty.setAttribute('onchange', `updateQuantity(${item.id}, this)`);
+    //addButton.setAttribute('class', '');
+
+    let tr = tBody.insertRow();
+    
+    let td1 = tr.insertCell(0);
+    let textNode = document.createTextNode(item.name);
+    td1.appendChild(textNode);
+
+    let td2 = tr.insertCell(1);
+    let textNode2 = document.createTextNode(`$${item.price*item.quantity}`);
+    td2.appendChild(textNode2);
+
+    let td3 = tr.insertCell(2);
+    td3.appendChild(updateQty);
+
+    let td4 = tr.insertCell(3);
+    td4.appendChild(delButton);
+  });
+
+  let tr = tBody.insertRow();
+  let td = tr.insertCell(0);
+  let textNode = document.createTextNode("TOTAL");
+  td.appendChild(textNode);
+
+  let td1 = tr.insertCell(1);
+  let textNode1 = document.createTextNode(`$${totalPrice}`);
+  td1.appendChild(textNode1);
+
+
+}
+

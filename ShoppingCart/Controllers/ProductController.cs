@@ -38,8 +38,7 @@ namespace ShoppingCart.Controllers
         [HttpGet, Route("{id}")]
         public Product GetById(int id)=> _productRepo[id];
 
-        [HttpGet, Route("categories")]
-        public IEnumerable<string> GetCategories()=> _productRepo.GetCategories();
+        
         
     }
 }
