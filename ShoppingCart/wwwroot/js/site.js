@@ -28,8 +28,11 @@ $(document).ready(function() {
   });
 
   $('#btnComplete').click(function() {
-    $('#finalMessage').innerHTML(`Thank you for your order ${$('#fullname').val}. you will recive information at your email address : ${$('#address').val}`);
-    $('#modContact').modal('hide');
+
+    var txt = "<h4>Thank you for your order " +  $('#fullname').val() + "! Information will be sent to "+$('#address').val() + "</h4>";
+    $("#finalMessage").html(txt);
+    //$('#finalMessage').innerHTML = "Thank you for your order " + + ". You will recive information at your email address: "+$('#address').val + ".";
+    $('#modContact').modal('hide'); 
     $('#modFinal').modal('show');
   });
 
@@ -37,6 +40,8 @@ $(document).ready(function() {
       cart = [];
       $('select option[value="1"]').attr("selected",true);
       $('#modFinal').modal('hide');
+      $('#fullname').val("");
+      $('#address').val("");
       _displayCount(); 
 
   });
