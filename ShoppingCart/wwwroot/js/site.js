@@ -25,7 +25,23 @@ $(document).ready(function() {
   $('#btnPlaceOrder').click(function() {
     $('#modCheckout').modal('hide');
     $('#modContact').modal('show');
-  })
+  });
+
+  $('#btnComplete').click(function() {
+    $('#finalMessage').innerHTML(`Thank you for your order ${$('#fullname').val}. you will recive information at your email address : ${$('#address').val}`);
+    $('#modContact').modal('hide');
+    $('#modFinal').modal('show');
+  });
+
+  $('#btnFinal').click(function() {
+      cart = [];
+      $('select option[value="1"]').attr("selected",true);
+      $('#modFinal').modal('hide');
+      _displayCount(); 
+
+  });
+
+
 
  
 });
