@@ -1,2 +1,2 @@
 # bulldog1
- First Freelance Gig
+ A simple app to use an html javascript front end to access data from web api. 
