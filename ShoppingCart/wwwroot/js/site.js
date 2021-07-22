@@ -1,9 +1,10 @@
 const productUri = 'api/products';
+const catUri = 'api/categories';
 let cart = [];
 
 $(document).ready(function() {
   //default drop down to no category
-  $('select option[value="1"]').attr("selected",true);
+ _loadDDL();
   
   //initilize cart count
   _displayCount();
@@ -51,6 +52,19 @@ $(document).ready(function() {
  
 });
 
+function _loadDDL(){
+  fetch(catUri)
+  .then(respone=> respone.json)
+  .then(data=> _addDllItem(data))
+  .catch(err => console.error(err));
+}
+
+function _addDllItem(data)
+{
+
+  data.forEach( c=> $("#ddlCategory").append($("<option></option>").val(c).html(c)));  
+   
+}
 function addItemToCart(id){
   fetch(`${productUri}/${id}`)
   .then(response => response.json())
