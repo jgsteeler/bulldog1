@@ -1,14 +1,14 @@
 [
     {
-        "category": "Home"
+        "Category": "Home"
     },
     {
-        "category": "Outdoors"
+        "Category": "Outdoors"
     },
     {
-        "category": "Sports"
+        "Category": "Sports"
     },
     {
-        "category": "Automotive"
+        "Category": "Automotive"
     }
 ]

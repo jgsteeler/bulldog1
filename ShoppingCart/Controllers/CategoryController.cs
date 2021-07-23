@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Models;
 
@@ -16,10 +17,10 @@ namespace ShoppingCart.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<ProductCategory> Get()
         {
 
-            return _productRepo.GetCategories();
+            return _productRepo.Categories.ToList();
         }
 
     }
