@@ -33,7 +33,11 @@ namespace ShoppingCart
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShoppingCart", Version = "v1" });
             });
-            services.AddSingleton<IProductRepo, ProductRepo>();
+            services
+                .AddSingleton<IProductRepo, ProductRepo>()
+                .AddSingleton<ICategoryRepo, CategoryRepo>()
+                .AddSingleton<ISaleRepo, SaleRepo>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
