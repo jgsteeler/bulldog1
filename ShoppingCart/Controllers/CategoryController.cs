@@ -9,18 +9,18 @@ namespace ShoppingCart.Controllers
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
-        private IProductRepo _productRepo;
+        private ICategoryRepo _repo;
 
-        public CategoryController(IProductRepo productRepo)
+        public CategoryController(ICategoryRepo repo)
         {
-            _productRepo = productRepo;
+            _repo = repo;
         }
 
         [HttpGet]
         public IEnumerable<ProductCategory> Get()
         {
 
-            return _productRepo.Categories.ToList();
+            return _repo.Categories.ToList();
         }
 
     }

@@ -3,6 +3,8 @@ namespace ShoppingCart.Models
     public class Sale
     {
         public int Id { get; set; }
+
+        public int SaleId { get; set;  }
         public string Name { get; set; }
         public decimal Price { get; set; }
 

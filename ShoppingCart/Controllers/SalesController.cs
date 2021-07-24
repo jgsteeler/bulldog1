@@ -11,24 +11,24 @@ namespace ShoppingCart.Controllers
     [Route("api/sales")]
     public class SalesController : ControllerBase
     {
-        private IProductRepo _productRepo;
+        private ISaleRepo _repo;
 
-        public SalesController(IProductRepo productRepo)
+        public SalesController(ISaleRepo repo)
         {
-            _productRepo = productRepo;
+            _repo = repo;
         }
 
         [HttpGet]
         public IEnumerable<Sale> Get()
         {
 
-            return _productRepo.Sales.ToList();
+            return _repo.Sales.ToList();
         }
 
         [HttpPost]
         public HttpResponseMessage Add(Sale item){
 
-            _productRepo.AddSale(item);
+            _repo.AddSale(item);
             return new HttpResponseMessage(HttpStatusCode.Accepted);
             
         }
